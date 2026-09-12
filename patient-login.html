@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Login</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Patient Report System</h1>
+        <p>Patient Login</p>
+    </header>
+
+    <main class="login-container">
+
+        <div class="login-card">
+
+            <h2>Patient Login</h2>
+            <p class="login-subtitle">
+                Login to access your medical reports
+            </p>
+
+            <form id="patientLoginForm">
+
+                <label for="patientEmail">
+                    Email / Patient ID
+                </label>
+
+                <input
+                    type="text"
+                    id="patientEmail"
+                    placeholder="Enter your email or patient ID"
+                    required
+                >
+
+                <label for="patientPassword">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="patientPassword"
+                    placeholder="Enter your password"
+                    required
+                >
+
+                <button type="submit">
+                    Login
+                </button>
+
+            </form>
+
+            <p class="register-text">
+                Don't have an account?
+                <a href="patient-register.html">Create Account</a>
+            </p>
+
+            <a href="index.html" class="back-link">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

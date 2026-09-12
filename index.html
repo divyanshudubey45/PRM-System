@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Report System</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Patient Report System</h1>
+        <p>Manage and access medical reports securely</p>
+    </header>
+
+    <main class="container">
+
+        <div class="welcome">
+            <h2>Welcome</h2>
+            <p>Select your role to continue</p>
+        </div>
+
+        <div class="role-container">
+
+            <div class="role-card">
+                <div class="icon">👤</div>
+                <h3>Patient</h3>
+                <p>View your medical reports and health information.</p>
+                <button onclick="selectRole('patient')">
+                    Continue as Patient
+                </button>
+            </div>
+
+            <div class="role-card">
+                <div class="icon">👨‍⚕️</div>
+                <h3>Doctor</h3>
+                <p>Create and manage patient medical reports.</p>
+                <button onclick="selectRole('doctor')">
+                    Continue as Doctor
+                </button>
+            </div>
+
+            <div class="role-card">
+                <div class="icon">🔐</div>
+                <h3>Admin</h3>
+                <p>Manage patients, doctors and system records.</p>
+                <button onclick="selectRole('admin')">
+                    Continue as Admin
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer>
+        <p>© 2026 Patient Report System</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

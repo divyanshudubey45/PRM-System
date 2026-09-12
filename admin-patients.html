@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Patients</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <header class="dashboard-header">
+        <div>
+            <h1>👤 Manage Patients</h1>
+            <p>Registered Patients</p>
+        </div>
+
+        <a href="admin-dashboard.html" class="dashboard-button">
+            ← Dashboard
+        </a>
+    </header>
+
+
+    <div class="reports-table-container">
+
+        <table class="reports-table">
+
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="adminPatientTable">
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+<!-- Patient Details Modal -->
+
+<div id="patientModal" class="custom-modal">
+
+    <div class="custom-modal-content">
+
+        <button class="modal-close" onclick="closeAdminModal()">
+            &times;
+        </button>
+
+        <h2>👤 Patient Details</h2>
+
+        <div id="patientModalDetails"></div>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

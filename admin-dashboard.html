@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        <header class="dashboard-header">
+            <div>
+                <h1>Admin Dashboard 🛡️</h1>
+                <p>Patient Report System</p>
+            </div>
+
+            <button onclick="logoutAdmin()" class="logout-button">
+                Logout
+            </button>
+        </header>
+
+
+        <!-- Statistics -->
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <h3>👤 Total Patients</h3>
+                <p id="totalPatients">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>👨‍⚕️ Total Doctors</h3>
+                <p id="totalDoctors">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>📄 Total Reports</h3>
+                <p id="totalReports">0</p>
+            </div>
+
+        </div>
+
+
+        <!-- Admin Actions -->
+
+        <div class="admin-actions">
+
+            <h2>Admin Management</h2>
+
+            <div class="admin-button-grid">
+
+                <a href="admin-patients.html" class="dashboard-button">
+    👤 Manage Patients
+</a>
+
+                <a href="doctor-list.html" class="dashboard-button">
+                    👨‍⚕️ Manage Doctors
+                </a>
+
+                <a href="admin-reports.html" class="dashboard-button">
+                    📄 View Reports
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>

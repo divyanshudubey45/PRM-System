@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Reports</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <header class="dashboard-header">
+
+        <div>
+            <h1>📄 My Reports</h1>
+            <p>Reports created by you</p>
+        </div>
+
+        <a href="doctor-dashboard.html" class="dashboard-button">
+            ← Dashboard
+        </a>
+
+    </header>
+
+
+    <!-- Search -->
+
+    <div class="doctor-report-tools">
+
+        <input
+            type="text"
+            id="doctorReportSearch"
+            placeholder="🔎 Search patient or test..."
+        >
+
+    </div>
+
+
+    <!-- Reports -->
+
+    <div class="reports-table-container">
+
+        <table class="reports-table">
+
+            <thead>
+                <tr>
+                    <th>Report ID</th>
+                    <th>Patient</th>
+                    <th>Test</th>
+                    <th>Diagnosis</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="doctorReportsTable">
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- Report Modal -->
+
+<div id="doctorReportModal" class="custom-modal">
+
+    <div class="custom-modal-content doctor-report-modal">
+
+        <button
+            class="modal-close"
+            onclick="closeDoctorReport()">
+            &times;
+        </button>
+
+        <h2>📄 Medical Report</h2>
+
+        <div id="doctorReportDetails"></div>
+
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>

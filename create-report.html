@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Create Medical Report</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>Create Medical Report</h1>
+
+        <p>Patient Report System</p>
+
+    </header>
+
+
+    <main class="login-container">
+
+        <div class="login-card report-form-card">
+
+            <h2>New Medical Report</h2>
+
+            <p class="login-subtitle">
+                Enter patient's medical information
+            </p>
+
+
+            <form id="createReportForm">
+
+
+                <!-- Patient -->
+
+                <label for="reportPatient">
+                    Patient
+                </label>
+
+                <select id="reportPatient" required>
+
+                    <option value="">
+                        Select Patient
+                    </option>
+
+                </select>
+
+
+                <!-- Doctor -->
+
+                <label for="reportDoctor">
+                    Doctor
+                </label>
+
+                <input
+                    type="text"
+                    id="reportDoctor"
+                    readonly
+                >
+
+
+                <!-- Report Date -->
+
+                <label for="reportDate">
+                    Report Date
+                </label>
+
+                <input
+                    type="date"
+                    id="reportDate"
+                    required
+                >
+
+
+                <!-- Symptoms -->
+
+                <label for="symptoms">
+                    Symptoms
+                </label>
+
+                <textarea
+                    id="symptoms"
+                    placeholder="Enter patient's symptoms"
+                    required>
+                </textarea>
+
+
+                <!-- Diagnosis -->
+
+                <label for="diagnosis">
+                    Diagnosis
+                </label>
+
+                <textarea
+                    id="diagnosis"
+                    placeholder="Enter diagnosis"
+                    required>
+                </textarea>
+
+
+                <!-- Test Name -->
+
+                <label for="testName">
+                    Test Name
+                </label>
+
+                <input
+                    type="text"
+                    id="testName"
+                    placeholder="e.g. Blood Test, CBC"
+                    required
+                >
+
+
+                <!-- Test Result -->
+
+                <label for="testResult">
+                    Test Result
+                </label>
+
+                <textarea
+                    id="testResult"
+                    placeholder="Enter test result"
+                    required>
+                </textarea>
+
+
+                <!-- Prescription -->
+
+                <label for="prescription">
+                    Prescription / Medicines
+                </label>
+
+                <textarea
+                    id="prescription"
+                    placeholder="Enter medicines and dosage"
+                    required>
+                </textarea>
+
+
+                <!-- Advice -->
+
+                <label for="doctorAdvice">
+                    Doctor's Advice
+                </label>
+
+                <textarea
+                    id="doctorAdvice"
+                    placeholder="Enter doctor's advice">
+                </textarea>
+
+
+                <button type="submit" id="reportSubmitButton">
+    Save Medical Report
+</button>
+
+
+            </form>
+
+
+            <a href="doctor-dashboard.html"
+               class="back-link">
+
+                ← Back to Dashboard
+
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

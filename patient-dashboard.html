@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Patient Dashboard</h1>
+        <p>Patient Report System</p>
+    </header>
+
+
+    <main class="container">
+
+        <div class="welcome">
+            <h2>Welcome, <span id="dashboardName">Patient</span> 👋</h2>
+            <p>Manage your medical information and reports.</p>
+        </div>
+
+
+        <!-- Patient Profile -->
+
+        <div class="profile-card">
+
+            <h2>My Profile</h2>
+
+            <div class="profile-grid">
+
+                <div>
+                    <strong>Patient ID</strong>
+                    <p id="patientId">-</p>
+                </div>
+
+                <div>
+                    <strong>Full Name</strong>
+                    <p id="profileName">-</p>
+                </div>
+
+                <div>
+                    <strong>Age</strong>
+                    <p id="profileAge">-</p>
+                </div>
+
+                <div>
+                    <strong>Gender</strong>
+                    <p id="profileGender">-</p>
+                </div>
+
+                <div>
+                    <strong>Email</strong>
+                    <p id="profileEmail">-</p>
+                </div>
+
+                <div>
+                    <strong>Phone</strong>
+                    <p id="profilePhone">-</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Dashboard Options -->
+
+        <div class="role-container">
+
+            <div class="role-card">
+
+                <div class="icon">📄</div>
+
+                <h3>My Reports</h3>
+
+                <p>
+                    View your medical reports and test results.
+                </p>
+
+                <a href="my-reports.html" class="dashboard-button">
+    View Reports
+</a>
+
+            </div>
+
+
+            <div class="role-card">
+
+                <div class="icon">💊</div>
+
+                <h3>Prescriptions</h3>
+
+                <p>
+                    View medicines and prescriptions given by doctors.
+                </p>
+                <a href="prescriptions.html" class="dashboard-button">
+    💊 Prescriptions
+</a>
+                
+
+            </div>
+
+
+            <div class="role-card">
+
+                <div class="icon">🚪</div>
+
+                <h3>Logout</h3>
+
+                <p>
+                    Logout from your patient account.
+                </p>
+
+                <button onclick="logoutPatient()">
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>All Reports</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <header class="dashboard-header">
+        <div>
+            <h1>📄 All Medical Reports</h1>
+            <p>Admin Report Management</p>
+        </div>
+
+        <a href="admin-dashboard.html" class="dashboard-button">
+            ← Dashboard
+        </a>
+    </header>
+
+
+    <div class="reports-table-container">
+
+        <table class="reports-table">
+
+            <thead>
+                <tr>
+                    <th>Report ID</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Test</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="adminReportsTable">
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>

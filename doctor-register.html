@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Registration</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Patient Report System</h1>
+        <p>Doctor Registration</p>
+    </header>
+
+
+    <main class="login-container">
+
+        <div class="login-card">
+
+            <h2>Create Doctor Account</h2>
+
+            <p class="login-subtitle">
+                Enter your professional details
+            </p>
+
+
+            <form id="doctorRegisterForm">
+
+                <label for="doctorName">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="doctorName"
+                    placeholder="Dr. Full Name"
+                    required
+                >
+
+
+                <label for="doctorSpecialization">
+                    Specialization
+                </label>
+
+                <input
+                    type="text"
+                    id="doctorSpecialization"
+                    placeholder="e.g. Cardiologist"
+                    required
+                >
+
+
+                <label for="doctorLicense">
+                    Medical License Number
+                </label>
+
+                <input
+                    type="text"
+                    id="doctorLicense"
+                    placeholder="Enter license number"
+                    required
+                >
+
+
+                <label for="doctorEmailRegister">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="doctorEmailRegister"
+                    placeholder="Enter your email"
+                    required
+                >
+
+
+                <label for="doctorPhone">
+                    Phone Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="doctorPhone"
+                    placeholder="Enter your phone number"
+                    required
+                >
+
+
+                <label for="doctorPasswordRegister">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="doctorPasswordRegister"
+                    placeholder="Create a password"
+                    required
+                >
+
+
+                <label for="doctorConfirmPassword">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="doctorConfirmPassword"
+                    placeholder="Confirm your password"
+                    required
+                >
+
+
+                <button type="submit">
+                    Register
+                </button>
+
+            </form>
+
+
+            <p class="register-text">
+
+                Already have an account?
+
+                <a href="doctor-login.html">
+                    Login
+                </a>
+
+            </p>
+
+
+            <a href="index.html" class="back-link">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Registration</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Patient Report System</h1>
+        <p>Patient Registration</p>
+    </header>
+
+    <main class="login-container">
+
+        <div class="login-card">
+
+            <h2>Create Patient Account</h2>
+
+            <p class="login-subtitle">
+                Enter your details to register
+            </p>
+
+            <form id="patientRegisterForm">
+
+                <label for="patientName">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="patientName"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+                <label for="patientAge">
+                    Age
+                </label>
+
+                <input
+                    type="number"
+                    id="patientAge"
+                    placeholder="Enter your age"
+                    min="1"
+                    max="120"
+                    required
+                >
+
+                <label for="patientGender">
+                    Gender
+                </label>
+
+                <select id="patientGender" required>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="patientEmailRegister">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="patientEmailRegister"
+                    placeholder="Enter your email"
+                    required
+                >
+
+                <label for="patientPhone">
+                    Phone Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="patientPhone"
+                    placeholder="Enter your phone number"
+                    required
+                >
+
+                <label for="patientPasswordRegister">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="patientPasswordRegister"
+                    placeholder="Create a password"
+                    required
+                >
+
+                <label for="confirmPassword">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm your password"
+                    required
+                >
+
+                <button type="submit">
+                    Register
+                </button>
+
+            </form>
+
+            <p class="register-text">
+                Already have an account?
+                <a href="patient-login.html">Login</a>
+            </p>
+
+            <a href="index.html" class="back-link">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

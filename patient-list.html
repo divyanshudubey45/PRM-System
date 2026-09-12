@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Patients</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>My Patients</h1>
+
+        <p>Patient Report System</p>
+
+    </header>
+
+
+    <main class="reports-container">
+
+        <div class="reports-heading">
+
+            <div>
+
+                <h2>Patient List</h2>
+
+                <p>
+                    View and manage registered patients
+                </p>
+
+            </div>
+
+
+            <a href="doctor-dashboard.html"
+               class="back-button">
+
+                ← Dashboard
+
+            </a>
+
+        </div>
+
+
+        <div class="reports-table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Patient ID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Email</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="patientTable">
+
+                    <!-- Patient will be added here -->
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

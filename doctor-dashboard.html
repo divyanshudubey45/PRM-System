@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>Doctor Dashboard</h1>
+
+        <p>Patient Report System</p>
+
+    </header>
+
+
+    <main class="container">
+
+        <div class="welcome">
+
+            <h2>
+                Welcome, <span id="doctorName">Doctor</span> 👨‍⚕️
+            </h2>
+
+            <p>
+                Manage your patients and medical reports.
+            </p>
+
+        </div>
+
+
+        <div class="role-container">
+
+
+            <div class="role-card">
+
+                <div class="icon">👥</div>
+
+                <h3>My Patients</h3>
+
+                <p>
+                    View and manage your patients.
+                </p>
+
+                <a href="patient-list.html" class="dashboard-button">
+    View Patients
+</a>
+
+            </div>
+
+
+            <div class="role-card">
+
+                <div class="icon">📄</div>
+
+                <h3>Create Report</h3>
+
+                <p>
+                    Create a new medical report for a patient.
+                </p>
+
+                <a href="create-report.html" class="dashboard-button">
+    Create Report
+</a>
+
+            </div>
+
+
+            <div class="role-card">
+
+                <div class="icon">📋</div>
+
+                <h3>My Reports</h3>
+
+                <p>
+                    View reports created by you.
+                </p>
+
+                <a href="doctor-reports.html" class="dashboard-button">
+    📄 View My Reports
+</a>
+
+            </div>
+
+
+            <div class="role-card">
+
+                <div class="icon">🚪</div>
+
+                <h3>Logout</h3>
+
+                <p>
+                    Logout from your doctor account.
+                </p>
+
+                <button onclick="logoutDoctor()">
+                    Logout
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
