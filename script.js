@@ -1249,25 +1249,109 @@ if (adminLoginForm) {
 
 if (document.getElementById("totalPatients")) {
 
-    const patient = JSON.parse(localStorage.getItem("patient"));
+    const patient =
+        JSON.parse(localStorage.getItem("patient"));
 
-    const doctor = JSON.parse(localStorage.getItem("doctor"));
+    const doctor =
+        JSON.parse(localStorage.getItem("doctor"));
 
-    const reports = JSON.parse(
-        localStorage.getItem("medicalReports")
-    ) || [];
+    const reports =
+        JSON.parse(
+            localStorage.getItem("medicalReports")
+        ) || [];
 
 
+    // Total Patients
     document.getElementById("totalPatients").textContent =
         patient ? "1" : "0";
 
+
+    // Total Doctors
     document.getElementById("totalDoctors").textContent =
         doctor ? "1" : "0";
 
+
+    // Total Reports
     document.getElementById("totalReports").textContent =
         reports.length;
-}
 
+
+    // Today's Reports
+    const today =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+    const todayReports =
+        reports.filter(
+            report => report.date === today
+        );
+
+    document.getElementById("todayReports").textContent =
+        todayReports.length;
+
+
+    // Total Prescriptions
+    const prescriptions =
+        reports.filter(
+            report =>
+                report.prescription &&
+                report.prescription.trim() !== ""
+        );
+
+    document.getElementById("totalPrescriptions").textContent =
+        prescriptions.length;
+
+    // ================= RECENT REPORTS =================
+
+const recentReportsTable =
+    document.getElementById("recentReportsTable");
+
+if (recentReportsTable) {
+
+    const recentReports =
+        [...reports]
+            .sort(
+                (a, b) =>
+                    new Date(b.date) -
+                    new Date(a.date)
+            )
+            .slice(0, 5);
+
+
+    if (recentReports.length === 0) {
+
+        recentReportsTable.innerHTML = `
+            <tr>
+                <td colspan="5">
+                    No reports available.
+                </td>
+            </tr>
+        `;
+
+    } else {
+
+        recentReportsTable.innerHTML = "";
+
+        recentReports.forEach(report => {
+
+            const row =
+                document.createElement("tr");
+
+            row.innerHTML = `
+                <td>REP-${report.id}</td>
+                <td>${report.patientName}</td>
+                <td>${report.doctorName}</td>
+                <td>${report.testName}</td>
+                <td>${report.date}</td>
+            `;
+
+            recentReportsTable.appendChild(row);
+
+        });
+    }
+}
+}
 
 // ================= ADMIN LOGOUT =================
 
@@ -1314,23 +1398,119 @@ if (document.getElementById("doctorTable")) {
                 <td>${doctor.phone}</td>
 
                 <td>
-                    <button
-                        class="view-button"
-                        onclick="viewDoctor()">
-                        View
-                    </button>
-                </td>
+    <div class="doctor-actions">
+
+        <button
+            class="view-button"
+            onclick="viewDoctor()">
+            👁 View
+        </button>
+
+        <button
+            class="edit-button"
+            onclick="editDoctor()">
+            ✏️ Edit
+        </button>
+
+        <button
+            class="delete-button"
+            onclick="deleteDoctor()">
+            🗑️ Delete
+        </button>
+
+    </div>
+</td>
 
             </tr>
         `;
     }
 }
+// ================= DOCTOR SEARCH =================
+
+const doctorSearch =
+    document.getElementById("doctorSearch");
+
+if (doctorSearch) {
+
+    doctorSearch.addEventListener(
+        "input",
+        function () {
+
+            const searchValue =
+                this.value.toLowerCase().trim();
+
+            const doctor =
+                JSON.parse(
+                    localStorage.getItem("doctor")
+                );
+
+            const doctorTable =
+                document.getElementById("doctorTable");
+
+            if (!doctor) {
+                return;
+            }
+
+            const matches =
+                doctor.name.toLowerCase().includes(searchValue) ||
+                doctor.specialization.toLowerCase().includes(searchValue) ||
+                doctor.email.toLowerCase().includes(searchValue) ||
+                doctor.license.toLowerCase().includes(searchValue);
 
 
-// ================= VIEW DOCTOR =================
+            if (!matches) {
+
+                doctorTable.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            🔍 No doctor found.
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+
+            const doctorId =
+                "DOC-" +
+                doctor.email
+                    .substring(0, 4)
+                    .toUpperCase();
+
+
+            doctorTable.innerHTML = `
+                <tr>
+
+                    <td>${doctorId}</td>
+
+                    <td>${doctor.name}</td>
+
+                    <td>${doctor.specialization}</td>
+
+                    <td>${doctor.license}</td>
+
+                    <td>${doctor.email}</td>
+
+                    <td>${doctor.phone}</td>
+
+                    <td>
+                        <button
+                            class="view-button"
+                            onclick="viewDoctor()">
+                            View
+                        </button>
+                    </td>
+
+                </tr>
+            `;
+        }
+    );
+}
+
+/// ================= VIEW DOCTOR =================
 
 function viewDoctor() {
-
     const doctor = JSON.parse(localStorage.getItem("doctor"));
 
     if (!doctor) {
@@ -1338,16 +1518,64 @@ function viewDoctor() {
         return;
     }
 
-    alert(
-        "Doctor Details\n\n" +
-        "Name: " + doctor.name + "\n" +
-        "Specialization: " + doctor.specialization + "\n" +
-        "License: " + doctor.license + "\n" +
-        "Email: " + doctor.email + "\n" +
-        "Phone: " + doctor.phone
-    );
+    const modalHTML = `
+        <div id="doctorViewOverlay" class="doctor-view-overlay">
+
+            <div class="doctor-view-box">
+
+                <div class="doctor-view-header">
+
+                    <div class="doctor-view-avatar">
+                        👨‍⚕️
+                    </div>
+
+                    <h2>${doctor.name}</h2>
+                    <p>${doctor.specialization}</p>
+
+                </div>
+
+                <div class="doctor-view-details">
+
+                    <div class="doctor-view-detail">
+                        <span>📜 License</span>
+                        <span>${doctor.license}</span>
+                    </div>
+
+                    <div class="doctor-view-detail">
+                        <span>📧 Email</span>
+                        <span>${doctor.email}</span>
+                    </div>
+
+                    <div class="doctor-view-detail">
+                        <span>📱 Phone</span>
+                        <span>${doctor.phone}</span>
+                    </div>
+
+                </div>
+
+                <button
+                    class="doctor-view-close"
+                    onclick="closeDoctorViewModal()">
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
 }
 
+
+// Close View Modal
+function closeDoctorViewModal() {
+    const modal = document.getElementById("doctorViewOverlay");
+
+    if (modal) {
+        modal.remove();
+    }
+}
 
 // ================= ADMIN - ALL REPORTS =================
 
@@ -1441,61 +1669,277 @@ function viewAdminReport(index) {
 }
 
 
+
 // ================= ADMIN - PATIENT LIST =================
 
+function displayAdminPatients(searchValue = "") {
+
+    const table = document.getElementById("adminPatientTable");
+
+    if (!table) return;
+
+    const patient = JSON.parse(localStorage.getItem("patient"));
+
+    // No patient
+    if (!patient) {
+        table.innerHTML = `
+            <tr>
+                <td colspan="7">No patients registered.</td>
+            </tr>
+        `;
+        return;
+    }
+
+    const search = searchValue.toLowerCase().trim();
+
+    const name = (patient.name || "").toLowerCase();
+    const email = (patient.email || "").toLowerCase();
+    const phone = (patient.phone || "").toLowerCase();
+    const gender = (patient.gender || "").toLowerCase();
+
+    const matches =
+        name.includes(search) ||
+        email.includes(search) ||
+        phone.includes(search) ||
+        gender.includes(search);
+
+    // Patient not found
+    if (!matches) {
+        table.innerHTML = `
+            <tr>
+                <td colspan="7">🔍 No patient found.</td>
+            </tr>
+        `;
+        return;
+    }
+
+    const patientId =
+        "PAT-" + (patient.email || "USER").substring(0, 4).toUpperCase();
+
+    table.innerHTML = `
+        <tr>
+
+            <td>${patientId}</td>
+
+            <td>${patient.name || "-"}</td>
+
+            <td>${patient.age || "-"}</td>
+
+            <td>${patient.gender || "-"}</td>
+
+            <td>${patient.email || "-"}</td>
+
+            <td>${patient.phone || "-"}</td>
+
+            <td>
+                <div class="patient-actions">
+
+                    <button
+                        class="view-button"
+                        onclick="viewAdminPatient()">
+                        👁 View
+                    </button>
+
+                    <button
+                        class="edit-button"
+                        onclick="editAdminPatient()">
+                        ✏️ Edit
+                    </button>
+
+                    <button
+                        class="delete-button"
+                        onclick="deleteAdminPatient()">
+                        🗑️ Delete
+                    </button>
+
+                </div>
+            </td>
+
+        </tr>
+    `;
+}
+
+
+// Load patients
 if (document.getElementById("adminPatientTable")) {
 
-    const adminPatientTable =
-        document.getElementById("adminPatientTable");
+    displayAdminPatients();
+
+    const patientSearch =
+        document.getElementById("patientSearch");
+
+    if (patientSearch) {
+
+        patientSearch.addEventListener("input", function () {
+
+            displayAdminPatients(this.value);
+
+        });
+    }
+}
+
+// ================= ADMIN - EDIT PATIENT =================
+
+function editAdminPatient() {
+
+    const patient = JSON.parse(localStorage.getItem("patient"));
+
+    if (!patient) {
+        alert("Patient not found.");
+        return;
+    }
+
+    const modalHTML = `
+        <div id="patientEditOverlay" class="patient-edit-overlay">
+
+            <div class="patient-edit-box">
+
+                <div class="patient-edit-header">
+                    <h2>✏️ Edit Patient</h2>
+
+                    <button
+                        class="patient-edit-close"
+                        onclick="closePatientEditModal()">
+                        ×
+                    </button>
+                </div>
+
+                <div class="patient-edit-form-group">
+                    <label>Patient Name</label>
+                    <input
+                        type="text"
+                        id="editPatientName"
+                        value="${patient.name || ""}">
+                </div>
+
+                <div class="patient-edit-form-group">
+                    <label>Age</label>
+                    <input
+                        type="number"
+                        id="editPatientAge"
+                        value="${patient.age || ""}">
+                </div>
+
+                <div class="patient-edit-form-group">
+                    <label>Gender</label>
+                    <input
+                        type="text"
+                        id="editPatientGender"
+                        value="${patient.gender || ""}">
+                </div>
+
+                <div class="patient-edit-form-group">
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        id="editPatientEmail"
+                        value="${patient.email || ""}">
+                </div>
+
+                <div class="patient-edit-form-group">
+                    <label>Phone</label>
+                    <input
+                        type="text"
+                        id="editPatientPhone"
+                        value="${patient.phone || ""}">
+                </div>
+
+                <div class="patient-edit-actions">
+
+                    <button
+                        class="patient-edit-cancel"
+                        onclick="closePatientEditModal()">
+                        Cancel
+                    </button>
+
+                    <button
+                        class="patient-edit-save"
+                        onclick="savePatientChanges()">
+                        💾 Save Changes
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+}
+
+
+function closePatientEditModal() {
+
+    const modal =
+        document.getElementById("patientEditOverlay");
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+function savePatientChanges() {
 
     const patient =
         JSON.parse(localStorage.getItem("patient"));
 
     if (!patient) {
 
-        adminPatientTable.innerHTML = `
-            <tr>
-                <td colspan="7">
-                    No patients registered.
-                </td>
-            </tr>
-        `;
+        closePatientEditModal();
 
-    } else {
+        alert("Patient not found.");
 
-        const patientId =
-            "PAT-" + patient.email.substring(0, 4).toUpperCase();
-
-        adminPatientTable.innerHTML = `
-            <tr>
-
-                <td>${patientId}</td>
-
-                <td>${patient.name}</td>
-
-                <td>${patient.age}</td>
-
-                <td>${patient.gender}</td>
-
-                <td>${patient.email}</td>
-
-                <td>${patient.phone}</td>
-
-                <td>
-                    <button
-                        class="view-button"
-                        onclick="viewAdminPatient()">
-                        View
-                    </button>
-                </td>
-
-            </tr>
-        `;
+        return;
     }
+
+    const name =
+        document.getElementById("editPatientName").value.trim();
+
+    const age =
+        document.getElementById("editPatientAge").value.trim();
+
+    const gender =
+        document.getElementById("editPatientGender").value.trim();
+
+    const email =
+        document.getElementById("editPatientEmail").value.trim();
+
+    const phone =
+        document.getElementById("editPatientPhone").value.trim();
+
+
+    if (!name || !age || !gender || !email || !phone) {
+
+        alert("Please fill all fields.");
+
+        return;
+    }
+
+
+    patient.name = name;
+    patient.age = age;
+    patient.gender = gender;
+    patient.email = email;
+    patient.phone = phone;
+
+
+    localStorage.setItem(
+        "patient",
+        JSON.stringify(patient)
+    );
+
+
+    closePatientEditModal();
+
+    alert("Patient details updated successfully!");
+
+    displayAdminPatients();
 }
 
-
 // ================= VIEW ADMIN PATIENT =================
+// ================= ADMIN - VIEW PATIENT =================
 
 function viewAdminPatient() {
 
@@ -1503,55 +1947,87 @@ function viewAdminPatient() {
         JSON.parse(localStorage.getItem("patient"));
 
     if (!patient) {
+        alert("Patient not found.");
         return;
     }
 
-    const patientId =
-        "PAT-" + patient.email.substring(0, 4).toUpperCase();
+    const modalHTML = `
+        <div id="patientViewOverlay"
+             class="patient-view-overlay">
 
-    document.getElementById("patientModalDetails").innerHTML = `
+            <div class="patient-view-box">
 
-        <div class="modal-detail">
-            <strong>Patient ID</strong>
-            <span>${patientId}</span>
-        </div>
+                <div class="patient-view-header">
 
-        <div class="modal-detail">
-            <strong>Name</strong>
-            <span>${patient.name}</span>
-        </div>
+                    <div class="patient-view-avatar">
+                        👤
+                    </div>
 
-        <div class="modal-detail">
-            <strong>Age</strong>
-            <span>${patient.age}</span>
-        </div>
+                    <h2>${patient.name || "-"}</h2>
 
-        <div class="modal-detail">
-            <strong>Gender</strong>
-            <span>${patient.gender}</span>
-        </div>
+                    <p>Patient Profile</p>
 
-        <div class="modal-detail">
-            <strong>Email</strong>
-            <span>${patient.email}</span>
-        </div>
+                </div>
 
-        <div class="modal-detail">
-            <strong>Phone</strong>
-            <span>${patient.phone}</span>
+                <div class="patient-view-details">
+
+                    <div class="patient-view-detail">
+                        <span>🆔 Patient ID</span>
+                        <span>
+                            PAT-${(patient.email || "USER")
+                                .substring(0, 4)
+                                .toUpperCase()}
+                        </span>
+                    </div>
+
+                    <div class="patient-view-detail">
+                        <span>🎂 Age</span>
+                        <span>${patient.age || "-"}</span>
+                    </div>
+
+                    <div class="patient-view-detail">
+                        <span>⚧ Gender</span>
+                        <span>${patient.gender || "-"}</span>
+                    </div>
+
+                    <div class="patient-view-detail">
+                        <span>📧 Email</span>
+                        <span>${patient.email || "-"}</span>
+                    </div>
+
+                    <div class="patient-view-detail">
+                        <span>📱 Phone</span>
+                        <span>${patient.phone || "-"}</span>
+                    </div>
+
+                </div>
+
+                <button
+                    class="patient-view-close"
+                    onclick="closePatientViewModal()">
+                    Close
+                </button>
+
+            </div>
+
         </div>
     `;
 
-    document.getElementById("patientModal")
-        .classList.add("show");
+    document.body.insertAdjacentHTML(
+        "beforeend",
+        modalHTML
+    );
 }
 
 
-function closeAdminModal() {
+function closePatientViewModal() {
 
-    document.getElementById("patientModal")
-        .classList.remove("show");
+    const modal =
+        document.getElementById("patientViewOverlay");
 
+    if (modal) {
+        modal.remove();
+    }
 }
 
 // ================= STYLISH ALERT SYSTEM =================
@@ -2092,14 +2568,81 @@ function deleteDoctorReport(index) {
         return;
     }
 
-    if (!confirm(
-        "Are you sure you want to delete this report?"
-    )) {
+    // Create confirmation modal
+    const modalHTML = `
+        <div id="deleteConfirmOverlay" class="delete-confirm-overlay">
+
+            <div class="delete-confirm-box">
+
+                <div class="delete-confirm-icon">
+                    ⚠️
+                </div>
+
+                <h2>Delete Report?</h2>
+
+                <p>
+                    Are you sure you want to delete this medical report?
+                </p>
+
+                <div class="delete-confirm-actions">
+
+                    <button
+                        class="cancel-delete-button"
+                        onclick="closeDeleteConfirm()">
+                        Cancel
+                    </button>
+
+                    <button
+                        class="confirm-delete-button"
+                        onclick="confirmDeleteReport(${index})">
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML(
+        "beforeend",
+        modalHTML
+    );
+}
+
+
+// ================= CLOSE DELETE CONFIRMATION =================
+
+function closeDeleteConfirm() {
+
+    const modal =
+        document.getElementById(
+            "deleteConfirmOverlay"
+        );
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+// ================= CONFIRM DELETE REPORT =================
+
+function confirmDeleteReport(index) {
+
+    const report =
+        doctorReportsData[index];
+
+    if (!report) {
+        closeDeleteConfirm();
         return;
     }
 
     let reports =
-        JSON.parse(localStorage.getItem("medicalReports")) || [];
+        JSON.parse(
+            localStorage.getItem("medicalReports")
+        ) || [];
 
     reports = reports.filter(
         item => item.id !== report.id
@@ -2110,18 +2653,322 @@ function deleteDoctorReport(index) {
         JSON.stringify(reports)
     );
 
+    closeDeleteConfirm();
+
     alert("Report deleted successfully!");
 
-    doctorReportsData = reports.filter(
-        item => {
+    const doctor =
+        JSON.parse(
+            localStorage.getItem("doctor")
+        );
 
-            const doctor =
-                JSON.parse(localStorage.getItem("doctor"));
+    doctorReportsData =
+        reports.filter(
+            item =>
+                doctor &&
+                item.doctorName === doctor.name
+        );
 
-            return doctor &&
-                item.doctorName === doctor.name;
-        }
+    displayDoctorReports(
+        doctorReportsData
     );
+}
 
-    displayDoctorReports(doctorReportsData);
+// ================= EDIT DOCTOR =================
+
+function editDoctor() {
+    const doctor = JSON.parse(localStorage.getItem("doctor"));
+
+    if (!doctor) {
+        alert("Doctor not found.");
+        return;
+    }
+
+    const modalHTML = `
+        <div id="doctorEditOverlay" class="doctor-edit-overlay">
+
+            <div class="doctor-edit-box">
+
+                <div class="doctor-edit-header">
+                    <h2>✏️ Edit Doctor</h2>
+
+                    <button
+                        class="doctor-edit-close"
+                        onclick="closeDoctorEditModal()">
+                        ×
+                    </button>
+                </div>
+
+                <div class="doctor-edit-form-group">
+                    <label>Doctor Name</label>
+                    <input
+                        type="text"
+                        id="editDoctorName"
+                        value="${doctor.name}">
+                </div>
+
+                <div class="doctor-edit-form-group">
+                    <label>Specialization</label>
+                    <input
+                        type="text"
+                        id="editDoctorSpecialization"
+                        value="${doctor.specialization}">
+                </div>
+
+                <div class="doctor-edit-form-group">
+                    <label>License Number</label>
+                    <input
+                        type="text"
+                        id="editDoctorLicense"
+                        value="${doctor.license}">
+                </div>
+
+                <div class="doctor-edit-form-group">
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        id="editDoctorEmail"
+                        value="${doctor.email}">
+                </div>
+
+                <div class="doctor-edit-form-group">
+                    <label>Phone</label>
+                    <input
+                        type="text"
+                        id="editDoctorPhone"
+                        value="${doctor.phone}">
+                </div>
+
+                <div class="doctor-edit-actions">
+
+                    <button
+                        class="doctor-edit-cancel"
+                        onclick="closeDoctorEditModal()">
+                        Cancel
+                    </button>
+
+                    <button
+                        class="doctor-edit-save"
+                        onclick="saveDoctorChanges()">
+                        💾 Save Changes
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+}
+
+
+// Close Edit Modal
+function closeDoctorEditModal() {
+    const modal = document.getElementById("doctorEditOverlay");
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+// Save Doctor Changes
+function saveDoctorChanges() {
+
+    const doctor = JSON.parse(localStorage.getItem("doctor"));
+
+    if (!doctor) {
+        closeDoctorEditModal();
+        alert("Doctor not found.");
+        return;
+    }
+
+    const name = document.getElementById("editDoctorName").value.trim();
+    const specialization = document.getElementById("editDoctorSpecialization").value.trim();
+    const license = document.getElementById("editDoctorLicense").value.trim();
+    const email = document.getElementById("editDoctorEmail").value.trim();
+    const phone = document.getElementById("editDoctorPhone").value.trim();
+
+    if (!name || !specialization || !license || !email || !phone) {
+        alert("Please fill all fields.");
+        return;
+    }
+
+    doctor.name = name;
+    doctor.specialization = specialization;
+    doctor.license = license;
+    doctor.email = email;
+    doctor.phone = phone;
+
+    localStorage.setItem("doctor", JSON.stringify(doctor));
+
+    closeDoctorEditModal();
+
+    alert("Doctor details updated successfully!");
+
+    location.reload();
+}
+
+// ================= DELETE DOCTOR =================
+
+function deleteDoctor() {
+    const doctor = JSON.parse(localStorage.getItem("doctor"));
+
+    if (!doctor) {
+        alert("Doctor not found.");
+        return;
+    }
+
+    const modalHTML = `
+        <div id="doctorDeleteOverlay" class="doctor-delete-overlay">
+            <div class="doctor-delete-box">
+
+                <div class="doctor-delete-icon">⚠️</div>
+
+                <h2>Delete Doctor?</h2>
+
+                <p>
+                    Are you sure you want to delete
+                    <strong>${doctor.name}</strong>?
+                </p>
+
+                <div class="doctor-delete-actions">
+
+                    <button
+                        class="doctor-cancel-delete"
+                        onclick="closeDoctorDeleteModal()">
+                        Cancel
+                    </button>
+
+                    <button
+                        class="doctor-confirm-delete"
+                        onclick="confirmDoctorDelete()">
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+}
+
+
+function closeDoctorDeleteModal() {
+    const modal = document.getElementById("doctorDeleteOverlay");
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+function confirmDoctorDelete() {
+
+    const doctor = JSON.parse(localStorage.getItem("doctor"));
+
+    if (!doctor) {
+        closeDoctorDeleteModal();
+        alert("Doctor not found.");
+        return;
+    }
+
+    localStorage.removeItem("doctor");
+
+    closeDoctorDeleteModal();
+
+    alert("Doctor deleted successfully!");
+
+    location.reload();
+}
+
+// ================= ADMIN - DELETE PATIENT =================
+
+function deleteAdminPatient() {
+
+    const patient = JSON.parse(localStorage.getItem("patient"));
+
+    if (!patient) {
+        alert("Patient not found.");
+        return;
+    }
+
+    const modalHTML = `
+        <div id="patientDeleteOverlay" class="patient-delete-overlay">
+
+            <div class="patient-delete-box">
+
+                <div class="patient-delete-icon">
+                    ⚠️
+                </div>
+
+                <h2>Delete Patient?</h2>
+
+                <p>
+                    Are you sure you want to delete
+                    <strong>${patient.name}</strong>?
+                </p>
+
+                <div class="patient-delete-actions">
+
+                    <button
+                        class="patient-cancel-delete"
+                        onclick="closePatientDeleteModal()">
+                        Cancel
+                    </button>
+
+                    <button
+                        class="patient-confirm-delete"
+                        onclick="confirmPatientDelete()">
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+}
+
+
+function closePatientDeleteModal() {
+
+    const modal =
+        document.getElementById("patientDeleteOverlay");
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+function confirmPatientDelete() {
+
+    const patient =
+        JSON.parse(localStorage.getItem("patient"));
+
+    if (!patient) {
+
+        closePatientDeleteModal();
+
+        alert("Patient not found.");
+
+        return;
+    }
+
+    // Delete patient
+    localStorage.removeItem("patient");
+
+    closePatientDeleteModal();
+
+    alert("Patient deleted successfully!");
+
+    displayAdminPatients();
 }
