@@ -27,25 +27,76 @@
 
         <!-- Statistics -->
 
-        <div class="stats-grid">
+<div class="stats-grid">
 
-            <div class="stat-card">
-                <h3>👤 Total Patients</h3>
-                <p id="totalPatients">0</p>
-            </div>
+    <div class="stat-card">
+        <h3>👤 Total Patients</h3>
+        <p id="totalPatients">0</p>
+    </div>
 
-            <div class="stat-card">
-                <h3>👨‍⚕️ Total Doctors</h3>
-                <p id="totalDoctors">0</p>
-            </div>
+    <div class="stat-card">
+        <h3>👨‍⚕️ Total Doctors</h3>
+        <p id="totalDoctors">0</p>
+    </div>
 
-            <div class="stat-card">
-                <h3>📄 Total Reports</h3>
-                <p id="totalReports">0</p>
-            </div>
+    <div class="stat-card">
+        <h3>📄 Total Reports</h3>
+        <p id="totalReports">0</p>
+    </div>
 
-        </div>
+    <div class="stat-card">
+        <h3>📅 Today's Reports</h3>
+        <p id="todayReports">0</p>
+    </div>
 
+    <div class="stat-card">
+        <h3>💊 Prescriptions</h3>
+        <p id="totalPrescriptions">0</p>
+    </div>
+
+</div>
+
+        <!-- Recent Reports -->
+
+<div class="admin-recent-reports">
+
+    <div class="section-header">
+        <h2>📄 Recent Reports</h2>
+
+        <a href="admin-reports.html" class="view-all-button">
+            View All
+        </a>
+    </div>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Report ID</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Test</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody id="recentReportsTable">
+
+                <tr>
+                    <td colspan="5">
+                        No reports available.
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
 
         <!-- Admin Actions -->
 
