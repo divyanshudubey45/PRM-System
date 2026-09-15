@@ -230,6 +230,9 @@ if (doctorRegisterForm) {
 
         const specialization =
             document.getElementById("doctorSpecialization").value;
+        
+        const gender =
+            document.getElementById("doctorGender").value;
 
         const license =
             document.getElementById("doctorLicense").value;
@@ -259,6 +262,7 @@ if (doctorRegisterForm) {
 
             name: name,
             specialization: specialization,
+            gender: gender,
             license: license,
             email: email,
             phone: phone,
@@ -396,62 +400,104 @@ if (patientTable) {
     const patientData =
         localStorage.getItem("patient");
 
+    const doctorData =
+        localStorage.getItem("doctor");
 
-    if (patientData) {
+
+    if (!doctorData) {
+
+        patientTable.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    Doctor login required.
+                </td>
+            </tr>
+        `;
+
+    } else if (!patientData) {
+
+        patientTable.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    No patients registered yet.
+                </td>
+            </tr>
+        `;
+
+    } else {
 
         const patient =
             JSON.parse(patientData);
 
-
-        const patientId =
-            "PAT-" +
-            patient.email
-                .substring(0, 4)
-                .toUpperCase();
+        const doctor =
+            JSON.parse(doctorData);
 
 
-        const row =
-            document.createElement("tr");
+        // Check assigned doctor
+
+        if (patient.assignedDoctorEmail !== doctor.email) {
+
+            patientTable.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        No patient assigned to you.
+                    </td>
+                </tr>
+            `;
+
+        } else {
+
+            const patientId =
+                "PAT-" +
+                patient.email
+                    .substring(0, 4)
+                    .toUpperCase();
 
 
-        row.innerHTML = `
-
-            <td>${patientId}</td>
-
-            <td>${patient.name}</td>
-
-            <td>${patient.age}</td>
-
-            <td>${patient.gender}</td>
-
-            <td>${patient.email}</td>
-
-            <td>
-
-                <button
-                    class="view-button"
-                    onclick="viewPatient()">
-
-                    👁 View
-
-                </button>
-
-                <button
-                    class="download-button"
-                    onclick="createReport()">
-
-                    📄 Report
-
-                </button>
-
-            </td>
-
-        `;
+            const row =
+                document.createElement("tr");
 
 
-        patientTable.appendChild(row);
+            row.innerHTML = `
 
+                <td>${patientId}</td>
+
+                <td>${patient.name}</td>
+
+                <td>${patient.age}</td>
+
+                <td>${patient.gender}</td>
+
+                <td>${patient.email}</td>
+
+                <td>
+
+                    <button
+                        class="view-button"
+                        onclick="viewPatient()">
+
+                        👁 View
+
+                    </button>
+
+                    <button
+                        class="download-button"
+                        onclick="createReport()">
+
+                        📄 Report
+
+                    </button>
+
+                </td>
+
+            `;
+
+
+            patientTable.appendChild(row);
+
+        }
     }
+}
 
     else {
 
@@ -469,7 +515,6 @@ if (patientTable) {
 
     }
 
-}
 
 
 // ==============================
@@ -1391,6 +1436,8 @@ if (document.getElementById("doctorTable")) {
 
                 <td>${doctor.specialization}</td>
 
+                <td>${doctor.gender || "-"}</td>
+
                 <td>${doctor.license}</td>
 
                 <td>${doctor.email}</td>
@@ -1535,7 +1582,10 @@ function viewDoctor() {
                 </div>
 
                 <div class="doctor-view-details">
-
+                    <div class="doctor-view-detail">
+    <span>⚧ Gender</span>
+    <span>${doctor.gender || "-"}</span>
+</div>
                     <div class="doctor-view-detail">
                         <span>📜 License</span>
                         <span>${doctor.license}</span>
@@ -1944,6 +1994,10 @@ function displayAdminPatients(searchValue = "") {
                         onclick="editAdminPatient()">
                         ✏️ Edit
                     </button>
+                    
+                    <button class="assign-button" onclick="assignDoctorToPatient()">
+        👨‍⚕️ Assign
+    </button>
 
                     <button
                         class="delete-button"
@@ -2913,6 +2967,16 @@ function editDoctor() {
                         id="editDoctorSpecialization"
                         value="${doctor.specialization}">
                 </div>
+                
+                <div class="doctor-edit-form-group">
+    <label>Gender</label>
+    <select id="editDoctorGender">
+        <option value="">Select Gender</option>
+        <option value="Male" ${doctor.gender === "Male" ? "selected" : ""}>Male</option>
+        <option value="Female" ${doctor.gender === "Female" ? "selected" : ""}>Female</option>
+        <option value="Other" ${doctor.gender === "Other" ? "selected" : ""}>Other</option>
+    </select>
+</div>
 
                 <div class="doctor-edit-form-group">
                     <label>License Number</label>
@@ -2986,17 +3050,19 @@ function saveDoctorChanges() {
 
     const name = document.getElementById("editDoctorName").value.trim();
     const specialization = document.getElementById("editDoctorSpecialization").value.trim();
+    const gender = document.getElementById("editDoctorGender").value.trim();
     const license = document.getElementById("editDoctorLicense").value.trim();
     const email = document.getElementById("editDoctorEmail").value.trim();
     const phone = document.getElementById("editDoctorPhone").value.trim();
 
-    if (!name || !specialization || !license || !email || !phone) {
+    if (!name || !specialization || !gender || !license || !email || !phone) {
         alert("Please fill all fields.");
         return;
     }
 
     doctor.name = name;
     doctor.specialization = specialization;
+    doctor.gender = gender;
     doctor.license = license;
     doctor.email = email;
     doctor.phone = phone;
@@ -3761,4 +3827,115 @@ function downloadAdminReportPDF(index) {
 
     });
 
+}
+
+function assignDoctorToPatient() {
+
+    const patient = JSON.parse(localStorage.getItem("patient"));
+    const doctor = JSON.parse(localStorage.getItem("doctor"));
+
+    if (!patient) {
+        alert("Patient not found.");
+        return;
+    }
+
+    if (!doctor) {
+        alert("No doctor is registered.");
+        return;
+    }
+
+    const modalHTML = `
+        <div id="assignDoctorOverlay" class="assign-doctor-overlay">
+            <div class="assign-doctor-box">
+
+                <div class="assign-doctor-header">
+                    <h2>👨‍⚕️ Assign Doctor</h2>
+                    <button
+                        class="assign-doctor-close"
+                        onclick="closeAssignDoctorModal()">
+                        ×
+                    </button>
+                </div>
+
+                <p class="assign-patient-name">
+                    Patient: <strong>${patient.name}</strong>
+                </p>
+
+                <div class="assign-doctor-info">
+                    <div>
+                        <span>Doctor</span>
+                        <strong>${doctor.name}</strong>
+                    </div>
+
+                    <div>
+                        <span>Specialization</span>
+                        <strong>${doctor.specialization}</strong>
+                    </div>
+
+                    <div>
+                        <span>Email</span>
+                        <strong>${doctor.email}</strong>
+                    </div>
+                </div>
+
+                <div class="assign-doctor-actions">
+                    <button
+                        class="assign-cancel-button"
+                        onclick="closeAssignDoctorModal()">
+                        Cancel
+                    </button>
+
+                    <button
+                        class="assign-confirm-button"
+                        onclick="confirmDoctorAssignment()">
+                        ✅ Assign Doctor
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+}
+
+
+function closeAssignDoctorModal() {
+
+    const modal =
+        document.getElementById("assignDoctorOverlay");
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+function confirmDoctorAssignment() {
+
+    const patient =
+        JSON.parse(localStorage.getItem("patient"));
+
+    const doctor =
+        JSON.parse(localStorage.getItem("doctor"));
+
+    if (!patient || !doctor) {
+        closeAssignDoctorModal();
+        alert("Patient or Doctor not found.");
+        return;
+    }
+
+    patient.assignedDoctorEmail = doctor.email;
+    patient.assignedDoctorName = doctor.name;
+
+    localStorage.setItem(
+        "patient",
+        JSON.stringify(patient)
+    );
+
+    closeAssignDoctorModal();
+
+    alert(
+        `Doctor ${doctor.name} assigned to ${patient.name} successfully!`
+    );
 }
