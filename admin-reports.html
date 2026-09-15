@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
+
+
 <body>
 
 <div class="dashboard-container">
@@ -24,6 +26,23 @@
         </a>
     </header>
 
+<!-- Report Search & Filters -->
+
+<div class="admin-report-filters">
+
+    <input
+        type="text"
+        id="adminReportSearch"
+        placeholder="🔍 Search by patient, doctor or test..."
+    >
+
+    <select id="adminReportDateFilter">
+        <option value="">📅 All Dates</option>
+        <option value="today">Today</option>
+        <option value="recent">Last 7 Days</option>
+    </select>
+
+</div>
 
     <div class="reports-table-container">
 
@@ -51,7 +70,10 @@
 </div>
 
 
-<script src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="script.js"></script>
 </body>
 </html>
