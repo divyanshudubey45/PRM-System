@@ -2413,3 +2413,151 @@ footer {
     background: #198754;
     color: white;
 }
+
+
+/* ================= LOGIN BACK TO HOME BUTTON ================= */
+
+.login-card .back-link {
+    display: block;
+    width: fit-content;
+
+    margin: 20px auto 0;
+    padding: 10px 20px;
+
+    background: #f1f5f9;
+    color: #007bff;
+
+    border: 1px solid #dbe4f0;
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: all 0.2s ease;
+}
+
+.login-card .back-link:hover {
+    background: #007bff;
+    color: white;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 12px rgba(0, 123, 255, 0.2);
+}
+
+/* ================= CONTACT & SUPPORT ================= */
+
+.contact-section {
+    margin-top: 50px;
+    padding: 35px 25px;
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.contact-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.contact-header h2 {
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+
+.contact-header p {
+    margin: 0 auto;
+    max-width: 700px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.contact-card {
+    text-align: center;
+    padding: 25px 20px;
+    background: #f8f9fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    transition: all 0.2s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.contact-icon {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.contact-card h3 {
+    margin: 8px 0;
+    font-size: 19px;
+}
+
+.contact-card p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.contact-card a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.contact-card a:hover {
+    text-decoration: underline;
+}
+
+.contact-card strong {
+    color: #333;
+}
+
+.contact-note {
+    margin-top: 25px;
+    padding: 15px 18px;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 10px;
+    color: #665200;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.home-footer {
+    margin-top: 35px;
+    padding: 20px;
+    text-align: center;
+    color: #777;
+    font-size: 13px;
+}
+
+.home-footer p {
+    margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-section {
+        padding: 25px 18px;
+    }
+
+    .contact-header h2 {
+        font-size: 24px;
+    }
+}
