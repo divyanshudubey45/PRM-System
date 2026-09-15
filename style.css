@@ -1364,6 +1364,23 @@ footer {
     transition: 0.2s ease;
 }
 
+.doctor-edit-form-group select {
+    width:100%;
+    box-sizing:border-box;
+    padding:12px 14px;
+    border:1px solid #dcdcdc;
+    border-radius:8px;
+    font-size:15px;
+    outline:none;
+    background:white;
+    transition:.2s ease;
+}
+
+.doctor-edit-form-group select:focus {
+    border-color:#007bff;
+    box-shadow:0 0 0 3px rgba(0,123,255,0.12);
+}
+
 .doctor-edit-form-group input:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.12);
@@ -1607,6 +1624,11 @@ footer {
 .patient-actions .edit-button {
     background: #ffc107;
     color: #212529;
+}
+
+.patient-actions .assign-button {
+    background: #6f42c1;
+    color: white;
 }
 
 .patient-actions .delete-button {
@@ -2559,5 +2581,123 @@ footer {
 
     .contact-header h2 {
         font-size: 24px;
+    }
+}
+
+/* Assign Doctor Modal */
+
+.assign-doctor-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.assign-doctor-box {
+    width: 450px;
+    max-width: 90%;
+    background: white;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    animation: assignDoctorShow 0.2s ease;
+}
+
+.assign-doctor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.assign-doctor-header h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.assign-doctor-close {
+    border: none;
+    background: transparent;
+    font-size: 28px;
+    cursor: pointer;
+    color: #666;
+}
+
+.assign-patient-name {
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.assign-doctor-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.assign-doctor-info div {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 13px 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.assign-doctor-info span {
+    font-weight: 600;
+    color: #555;
+}
+
+.assign-doctor-info strong {
+    color: #222;
+    text-align: right;
+    word-break: break-word;
+}
+
+.assign-doctor-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.assign-cancel-button,
+.assign-confirm-button {
+    border: none;
+    padding: 11px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.assign-cancel-button {
+    background: #e9ecef;
+    color: #333;
+}
+
+.assign-confirm-button {
+    background: #007bff;
+    color: white;
+}
+
+.assign-cancel-button:hover,
+.assign-confirm-button:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes assignDoctorShow {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }
