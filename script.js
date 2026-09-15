@@ -1579,63 +1579,192 @@ function closeDoctorViewModal() {
 
 // ================= ADMIN - ALL REPORTS =================
 
-if (document.getElementById("adminReportsTable")) {
+function displayAdminReports() {
 
     const adminReportsTable =
         document.getElementById("adminReportsTable");
 
+    if (!adminReportsTable) return;
+
+    const searchInput =
+        document.getElementById("adminReportSearch");
+
+    const dateFilter =
+        document.getElementById("adminReportDateFilter");
+
+    const searchValue =
+        searchInput ? searchInput.value.toLowerCase().trim() : "";
+
+    const selectedDateFilter =
+        dateFilter ? dateFilter.value : "";
+
     const reports =
         JSON.parse(localStorage.getItem("medicalReports")) || [];
 
+    let filteredReports = reports.filter(report => {
 
-    if (reports.length === 0) {
+        // Search filter
+        const patientName =
+            (report.patientName || "").toLowerCase();
+
+        const doctorName =
+            (report.doctorName || "").toLowerCase();
+
+        const testName =
+            (report.testName || "").toLowerCase();
+
+        const matchesSearch =
+            patientName.includes(searchValue) ||
+            doctorName.includes(searchValue) ||
+            testName.includes(searchValue);
+
+
+        // Date filter
+        let matchesDate = true;
+
+        if (selectedDateFilter === "today") {
+
+            const today =
+                new Date().toISOString().split("T")[0];
+
+            matchesDate = report.date === today;
+
+        }
+
+        else if (selectedDateFilter === "recent") {
+
+            const today = new Date();
+
+            const reportDate =
+                new Date(report.date);
+
+            const difference =
+                (today - reportDate) /
+                (1000 * 60 * 60 * 24);
+
+            matchesDate =
+                difference >= 0 && difference <= 7;
+        }
+
+
+        return matchesSearch && matchesDate;
+
+    });
+
+
+    // No reports
+    if (filteredReports.length === 0) {
 
         adminReportsTable.innerHTML = `
             <tr>
                 <td colspan="7">
-                    No reports available.
+                    🔍 No reports found.
                 </td>
             </tr>
         `;
 
-    } else {
-
-        adminReportsTable.innerHTML = "";
-
-        reports.forEach((report, index) => {
-
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>REP-${report.id}</td>
-
-                <td>${report.patientName}</td>
-
-                <td>${report.doctorName}</td>
-
-                <td>${report.testName}</td>
-
-                <td>${report.date}</td>
-
-                <td>Completed</td>
-
-                <td>
-                    <button
-                        class="view-button"
-                        onclick="viewAdminReport(${index})">
-                        View
-                    </button>
-                </td>
-            `;
-
-            adminReportsTable.appendChild(row);
-
-        });
+        return;
     }
+
+
+    adminReportsTable.innerHTML = "";
+
+
+    filteredReports.forEach((report) => {
+
+        // Original index for View button
+        const originalIndex =
+            reports.findIndex(item => item.id === report.id);
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+            <td>REP-${report.id}</td>
+
+            <td>${report.patientName || "-"}</td>
+
+            <td>${report.doctorName || "-"}</td>
+
+            <td>${report.testName || "-"}</td>
+
+            <td>${report.date || "-"}</td>
+
+            <td>Completed</td>
+
+            <td>
+                <div class="admin-report-actions">
+
+    <button
+        class="view-button"
+        onclick="viewAdminReport(${originalIndex})">
+        👁 View
+    </button>
+
+    <button
+        class="edit-button"
+        onclick="editAdminReport(${originalIndex})">
+        ✏️ Edit
+    </button>
+
+    <button
+        class="delete-button"
+        onclick="deleteAdminReport(${originalIndex})">
+        🗑️ Delete
+    </button>
+
+    <button
+    class="pdf-button"
+    onclick="downloadAdminReportPDF(${originalIndex})">
+    📄 PDF
+</button>
+
+</div>
+            </td>
+        `;
+
+
+        adminReportsTable.appendChild(row);
+
+    });
 }
 
 
-// ================= VIEW ADMIN REPORT =================
+// Initial load
+if (document.getElementById("adminReportsTable")) {
+
+    displayAdminReports();
+
+
+    // Search
+    const adminReportSearch =
+        document.getElementById("adminReportSearch");
+
+    if (adminReportSearch) {
+
+        adminReportSearch.addEventListener(
+            "input",
+            displayAdminReports
+        );
+    }
+
+
+    // Date filter
+    const adminReportDateFilter =
+        document.getElementById("adminReportDateFilter");
+
+    if (adminReportDateFilter) {
+
+        adminReportDateFilter.addEventListener(
+            "change",
+            displayAdminReports
+        );
+    }
+}
+
+// ================= ADMIN - VIEW REPORT =================
 
 function viewAdminReport(index) {
 
@@ -1649,25 +1778,95 @@ function viewAdminReport(index) {
         return;
     }
 
-    alert(
-        "Medical Report\n\n" +
+    const modalHTML = `
+        <div id="adminReportViewOverlay"
+             class="admin-report-view-overlay">
 
-        "Patient: " + report.patientName + "\n" +
+            <div class="admin-report-view-box">
 
-        "Doctor: " + report.doctorName + "\n" +
+                <div class="admin-report-view-header">
 
-        "Date: " + report.date + "\n" +
+                    <div class="admin-report-icon">
+                        📄
+                    </div>
 
-        "Test: " + report.testName + "\n" +
+                    <h2>Medical Report</h2>
 
-        "Test Result: " + report.testResult + "\n\n" +
+                    <p>REP-${report.id}</p>
 
-        "Diagnosis: " + report.diagnosis + "\n\n" +
+                </div>
 
-        "Prescription: " + report.prescription
+                <div class="admin-report-view-details">
+
+                    <div class="admin-report-detail">
+                        <span>👤 Patient</span>
+                        <span>${report.patientName || "-"}</span>
+                    </div>
+
+                    <div class="admin-report-detail">
+                        <span>👨‍⚕️ Doctor</span>
+                        <span>${report.doctorName || "-"}</span>
+                    </div>
+
+                    <div class="admin-report-detail">
+                        <span>📅 Date</span>
+                        <span>${report.date || "-"}</span>
+                    </div>
+
+                    <div class="admin-report-detail">
+                        <span>🧪 Test</span>
+                        <span>${report.testName || "-"}</span>
+                    </div>
+
+                    <div class="admin-report-detail report-full-width">
+                        <span>🔬 Test Result</span>
+                        <p>${report.testResult || "-"}</p>
+                    </div>
+
+                    <div class="admin-report-detail report-full-width">
+                        <span>🩺 Diagnosis</span>
+                        <p>${report.diagnosis || "-"}</p>
+                    </div>
+
+                    <div class="admin-report-detail report-full-width">
+                        <span>💊 Prescription</span>
+                        <p>${report.prescription || "-"}</p>
+                    </div>
+
+                    <div class="admin-report-detail report-full-width">
+                        <span>📝 Notes</span>
+                        <p>${report.notes || "-"}</p>
+                    </div>
+
+                </div>
+
+                <button
+                    class="admin-report-view-close"
+                    onclick="closeAdminReportView()">
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML(
+        "beforeend",
+        modalHTML
     );
 }
 
+
+function closeAdminReportView() {
+
+    const modal =
+        document.getElementById("adminReportViewOverlay");
+
+    if (modal) {
+        modal.remove();
+    }
+}
 
 
 // ================= ADMIN - PATIENT LIST =================
@@ -1938,7 +2137,7 @@ function savePatientChanges() {
     displayAdminPatients();
 }
 
-// ================= VIEW ADMIN PATIENT =================
+
 // ================= ADMIN - VIEW PATIENT =================
 
 function viewAdminPatient() {
@@ -2971,4 +3170,595 @@ function confirmPatientDelete() {
     alert("Patient deleted successfully!");
 
     displayAdminPatients();
+}
+
+// ================= ADMIN - EDIT REPORT =================
+
+function editAdminReport(index) {
+
+    const reports =
+        JSON.parse(localStorage.getItem("medicalReports")) || [];
+
+    const report = reports[index];
+
+    if (!report) {
+        alert("Report not found.");
+        return;
+    }
+
+    // Save report ID for editing
+    localStorage.setItem(
+        "editingReportId",
+        report.id
+    );
+
+    // Open existing report form
+    window.location.href = "create-report.html";
+}
+
+// ================= ADMIN - DELETE REPORT =================
+
+function deleteAdminReport(index) {
+
+    const reports =
+        JSON.parse(localStorage.getItem("medicalReports")) || [];
+
+    const report = reports[index];
+
+    if (!report) {
+        alert("Report not found.");
+        return;
+    }
+
+    const modalHTML = `
+        <div id="adminReportDeleteOverlay"
+             class="admin-report-delete-overlay">
+
+            <div class="admin-report-delete-box">
+
+                <div class="admin-report-delete-icon">
+                    ⚠️
+                </div>
+
+                <h2>Delete Report?</h2>
+
+                <p>
+                    Are you sure you want to delete
+                    <strong>REP-${report.id}</strong>?
+                </p>
+
+                <div class="admin-report-delete-actions">
+
+                    <button
+                        class="admin-report-cancel-delete"
+                        onclick="closeAdminReportDelete()">
+                        Cancel
+                    </button>
+
+                    <button
+                        class="admin-report-confirm-delete"
+                        onclick="confirmAdminReportDelete(${index})">
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML(
+        "beforeend",
+        modalHTML
+    );
+}
+
+
+function closeAdminReportDelete() {
+
+    const modal =
+        document.getElementById(
+            "adminReportDeleteOverlay"
+        );
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+
+function confirmAdminReportDelete(index) {
+
+    const reports =
+        JSON.parse(localStorage.getItem("medicalReports")) || [];
+
+    if (!reports[index]) {
+
+        closeAdminReportDelete();
+
+        alert("Report not found.");
+
+        return;
+    }
+
+    reports.splice(index, 1);
+
+    localStorage.setItem(
+        "medicalReports",
+        JSON.stringify(reports)
+    );
+
+    closeAdminReportDelete();
+
+    alert("Report deleted successfully!");
+
+    displayAdminReports();
+}
+// ================= ADMIN - DOWNLOAD REPORT PDF =================
+// ================= ADMIN - DOWNLOAD ONE PAGE PDF =================
+
+function downloadAdminReportPDF(index) {
+
+    const reports =
+        JSON.parse(localStorage.getItem("medicalReports")) || [];
+
+    const report = reports[index];
+
+    if (!report) {
+        alert("Report not found.");
+        return;
+    }
+
+    if (typeof html2canvas === "undefined" ||
+        typeof window.jspdf === "undefined") {
+
+        alert("PDF library not loaded. Please refresh the page.");
+        return;
+    }
+
+
+    const pdfContent = document.createElement("div");
+
+    pdfContent.style.width = "680px";
+    pdfContent.style.background = "#ffffff";
+    pdfContent.style.fontFamily = "Arial, sans-serif";
+    pdfContent.style.color = "#222";
+    pdfContent.style.padding = "30px";
+    pdfContent.style.boxSizing = "border-box";
+
+
+    pdfContent.innerHTML = `
+
+        <!-- HEADER -->
+
+        <div style="
+            background:#007bff;
+            color:white;
+            padding:22px;
+            border-radius:12px;
+            text-align:center;
+            margin-bottom:18px;
+        ">
+
+            <div style="
+                font-size:26px;
+                font-weight:bold;
+                margin-bottom:5px;
+            ">
+                🏥 Patient Report System
+            </div>
+
+            <div style="
+                font-size:20px;
+                font-weight:bold;
+            ">
+                MEDICAL REPORT
+            </div>
+
+            <div style="
+                margin-top:6px;
+                font-size:13px;
+            ">
+                Report ID: REP-${report.id}
+            </div>
+
+        </div>
+
+
+        <!-- PATIENT INFORMATION -->
+
+        <div style="
+            border:1px solid #ddd;
+            border-radius:10px;
+            padding:16px;
+            margin-bottom:16px;
+        ">
+
+            <h3 style="
+                margin:0 0 10px 0;
+                color:#007bff;
+                border-bottom:2px solid #007bff;
+                padding-bottom:6px;
+                font-size:17px;
+            ">
+                👤 Patient Information
+            </h3>
+
+            <table style="
+                width:100%;
+                border-collapse:collapse;
+                font-size:13px;
+            ">
+
+                <tr>
+                    <td style="
+                        padding:5px;
+                        font-weight:bold;
+                        width:30%;
+                    ">
+                        Patient Name
+                    </td>
+
+                    <td style="padding:5px;">
+                        ${report.patientName || "-"}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="
+                        padding:5px;
+                        font-weight:bold;
+                    ">
+                        Doctor
+                    </td>
+
+                    <td style="padding:5px;">
+                        ${report.doctorName || "-"}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="
+                        padding:5px;
+                        font-weight:bold;
+                    ">
+                        Report Date
+                    </td>
+
+                    <td style="padding:5px;">
+                        ${report.date || "-"}
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+
+
+        <!-- TEST INFORMATION -->
+
+        <div style="
+            border:1px solid #ddd;
+            border-radius:10px;
+            padding:16px;
+            margin-bottom:16px;
+        ">
+
+            <h3 style="
+                margin:0 0 10px 0;
+                color:#007bff;
+                border-bottom:2px solid #007bff;
+                padding-bottom:6px;
+                font-size:17px;
+            ">
+                🧪 Test Information
+            </h3>
+
+
+            <div style="
+                background:#f5f8ff;
+                padding:12px;
+                border-radius:7px;
+                margin-bottom:10px;
+            ">
+
+                <div style="
+                    font-size:11px;
+                    font-weight:bold;
+                    color:#666;
+                    margin-bottom:4px;
+                ">
+                    TEST NAME
+                </div>
+
+                <div style="
+                    font-size:14px;
+                    font-weight:bold;
+                ">
+                    ${report.testName || "-"}
+                </div>
+
+            </div>
+
+
+            <div style="
+                background:#f5f8ff;
+                padding:12px;
+                border-radius:7px;
+            ">
+
+                <div style="
+                    font-size:11px;
+                    font-weight:bold;
+                    color:#666;
+                    margin-bottom:4px;
+                ">
+                    TEST RESULT
+                </div>
+
+                <div style="
+                    font-size:13px;
+                    line-height:1.4;
+                    white-space:pre-wrap;
+                ">
+                    ${report.testResult || "-"}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DIAGNOSIS -->
+
+        <div style="
+            border-left:4px solid #007bff;
+            background:#f5f8ff;
+            padding:14px;
+            border-radius:7px;
+            margin-bottom:16px;
+        ">
+
+            <div style="
+                font-size:15px;
+                font-weight:bold;
+                color:#007bff;
+                margin-bottom:5px;
+            ">
+                🩺 Diagnosis
+            </div>
+
+            <div style="
+                font-size:13px;
+                line-height:1.4;
+                white-space:pre-wrap;
+            ">
+                ${report.diagnosis || "-"}
+            </div>
+
+        </div>
+
+
+        <!-- PRESCRIPTION -->
+
+        <div style="
+            border-left:4px solid #198754;
+            background:#f3faf6;
+            padding:14px;
+            border-radius:7px;
+            margin-bottom:16px;
+        ">
+
+            <div style="
+                font-size:15px;
+                font-weight:bold;
+                color:#198754;
+                margin-bottom:5px;
+            ">
+                💊 Prescription / Medicines
+            </div>
+
+            <div style="
+                font-size:13px;
+                line-height:1.4;
+                white-space:pre-wrap;
+            ">
+                ${report.prescription || "-"}
+            </div>
+
+        </div>
+
+
+        <!-- DOCTOR ADVICE -->
+
+        <div style="
+            border-left:4px solid #ffc107;
+            background:#fffaf0;
+            padding:14px;
+            border-radius:7px;
+            margin-bottom:18px;
+        ">
+
+            <div style="
+                font-size:15px;
+                font-weight:bold;
+                color:#856404;
+                margin-bottom:5px;
+            ">
+                📋 Doctor's Advice
+            </div>
+
+            <div style="
+                font-size:13px;
+                line-height:1.4;
+                white-space:pre-wrap;
+            ">
+                ${report.doctorAdvice || "-"}
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div style="
+            border-top:1px solid #ddd;
+            padding-top:10px;
+            text-align:center;
+            color:#777;
+            font-size:10px;
+        ">
+
+            <div style="font-weight:bold;">
+                Patient Report System
+            </div>
+
+            <div style="margin-top:3px;">
+                This is a digitally generated medical report.
+            </div>
+
+        </div>
+
+    `;
+
+
+    /*
+        Temporary element ko page ke bahar rakhenge
+        taaki html2canvas properly render kar sake.
+    */
+
+    pdfContent.style.position = "absolute";
+    pdfContent.style.left = "-10000px";
+    pdfContent.style.top = "0";
+
+    document.body.appendChild(pdfContent);
+
+
+    html2canvas(pdfContent, {
+
+        scale: 2,
+
+        useCORS: true,
+
+        backgroundColor: "#ffffff"
+
+    }).then(function(canvas) {
+
+
+        // ================= CREATE A4 PDF =================
+
+        const { jsPDF } = window.jspdf;
+
+        const pdf = new jsPDF({
+
+            unit: "mm",
+
+            format: "a4",
+
+            orientation: "portrait"
+
+        });
+
+
+        // A4 dimensions
+
+        const pageWidth = 210;
+        const pageHeight = 297;
+
+        const margin = 5;
+
+        const availableWidth =
+            pageWidth - (margin * 2);
+
+        const availableHeight =
+            pageHeight - (margin * 2);
+
+
+        // Canvas dimensions
+
+        const canvasWidth =
+            canvas.width;
+
+        const canvasHeight =
+            canvas.height;
+
+
+        // Calculate scale
+
+        const widthRatio =
+            availableWidth / canvasWidth;
+
+        const heightRatio =
+            availableHeight / canvasHeight;
+
+
+        // Use smaller ratio so everything fits
+
+        const ratio =
+            Math.min(
+                widthRatio,
+                heightRatio
+            );
+
+
+        const finalWidth =
+            canvasWidth * ratio;
+
+        const finalHeight =
+            canvasHeight * ratio;
+
+
+        // Center horizontally
+
+        const x =
+            (pageWidth - finalWidth) / 2;
+
+
+        // Center vertically
+
+        const y =
+            (pageHeight - finalHeight) / 2;
+
+
+        // Add complete report as ONE image
+
+        pdf.addImage(
+
+            canvas.toDataURL("image/jpeg", 0.98),
+
+            "JPEG",
+
+            x,
+
+            y,
+
+            finalWidth,
+
+            finalHeight
+
+        );
+
+
+        // Save exactly one-page PDF
+
+        pdf.save(
+            `Medical-Report-REP-${report.id}.pdf`
+        );
+
+
+        // Remove temporary element
+
+        pdfContent.remove();
+
+    }).catch(function(error) {
+
+        console.error(error);
+
+        pdfContent.remove();
+
+        alert("Unable to generate PDF.");
+
+    });
+
 }
